@@ -1,8 +1,125 @@
 \documentclass{article}
+\usepackage{ulem}
+\usepackage{xcolor}
+\newcommand{\Cr}{\color{red}}
+\newcommand{\B}{\bfseries}
+\newcommand{\M}{\mdseries}
+
+
 \begin{document}
 \noindent
 Automatically Proving Linearizability\\
 $<$Viktor Vafeiadis$>$ \\\\
-Abstract : Presents a practical automatic vefication procedure for proving Linearizability (aatomicity and functional correctness).\\
+{\color{blue}{\large{}Q:}\\
+1.What is constructor ? \\
+2.$s(h)$ is a history corresponds state s ? \\
+3.Logical state VS concrete state ?
+}
+\\\\
+\bfseries{Abstract} :\mdseries{}
+Presents a practical automatic vefication procedure for proving Linearizability (aatomicity and functional correctness).\\
+Linearization points could be hard to point out : \uline{the can depend on a non-local boolean condition and can even reside within other concurrently executing threads }. Brute force search is infeasible .\\
+
+
+However ,in practice , observation point out that these complicated linearization points arise only in({\color{blue}{is it true only in ?}}) operation executions that {\color{red} {do not} logically update the liberary's shared state}, specification of which was called 
+{\color{red}pure specification}. \\
+
+
+To verify such operations, certain 'pure linearization checker' derived from the specification used to instruments the library code , and runs a suitable powerful abstract interpreter to validate that there are {\color{red}{no assertion violations}} .\\
+\colorbox{green!35!blue!24}{ 
+\begin{tabular}{|l|}\hline
+Work related: \\
+1.Line-up \\
+2.MC L via refinement.\\
+3.Deriving L fine-grained concurrent objects .\\
+\hline
+\end{tabular}
+}\newline
+1.On one thing, above do not prove correctness; merely check short execution traces of small number of threads .\\
+2.On the positive side , they do not \uline{require linearization points to be annoted} . \newline
+
+
+Co-methods: static analyses(shape analyses), they require the linearization points SPECIFED, although they work for an unbounded number of threads . \newline
+\colorbox{green!35!blue!24}{
+\begin{tabular}{|l|}\hline
+Work related: \\
+1.Comparision under abstraction for verifying linearisability. \\
+2.Thread quantification for concurrent shape analyses .\\
+3.Shape-value abstraction for verifying linearisability .\\
+\hline
+\end{tabular}
+}\newline
+\\\\
+
+{\large{}\bfseries{Definitions}}\newline
+1. Lirary ,{\it{A}} consists of a {\it{constructor, $A_{init}$}}, and a number of {\it{methods},$A_{1}$ ... $A_{n}$} \newline
+2. Client : Program that calls the lirary's constructor once in its initial sequential phase ,and then call any number of the methods ;\\
+{(\color{red}Annotation: we say that a history is sequential if none of its methods overlap in time)} \\
+
+\noindent
+{\B{}New linearization definition :}
+A library {\it{A}} is linearizable with respect to a specification {\it{B}} iff for all instrumented clients {\it{C}} and every state s , {\it{if($s_{init},s)\in C[A]^*$}}, then there exists a state $s'$ such that $(s_{init}', s')\in C[B]^*$ and $s(h) = s'(h)$, where $s_{init} \ and\  s_{init}'$ are the initial states after calling $A_{init}\ and\  B_{init}$ respectively .
+\\
+\colorbox{red!35!green!24}{
+\begin{tabular}{l}\hline
+$*********************$ \\
+Use syntatic equality on the recorded histories \\
+
+$<What's\  the\  meaning ?>$ \\
+$*********************$\\
+\hline
+\end{tabular}
+}\\\\
+3 : \\
+Pure executions : executions that do not modify abstract state ;\\
+Effective executions : executions that modify abstract state ;
+\\\\
+\begin{tabular}{l}\hline
+Basically, when a verifier checks one thread with a compositional verification technique,
+\\ it has a model of what updates all the other threads can do and the effect on the current thread .\\\hline
+\end{tabular}
+\\\\
+
+The verification procedure is divided in two phase :\\
+\begin{tabular}{l}\hline
+Phase 1 instrumentes the constructor of the library, computes the pure checkers for each operations and\\ generates
+a set of candidate linearization points assignments .\\
+Phase 2 iterates over the set to check is any of these assignments valid(if valid then $'Success'$)\\
+\hline
+\end{tabular}\\\newline
+
+{\B{Preparation Phase}} \\1,generate the library's constructor: $iop_{init} \leftarrow {(op_{init}; spec_{init})}$ \\
+2, generate pure checkers : $check_i \leftarrow {GENERATEPURECHECKER(spec_i)}$
+
+{\it{}\Cr for {\B{enqueue}} it's simply the empty command, and for {\B{tryDequeue}}\\
+
+if(*){assume(AQ == @empty); can$\_$return[EMPTY]=true;}}
+\newline
+3, generate linearization points .\\\newline
+
+{\B{Checking Phase}}.
+
+
 
 \end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
